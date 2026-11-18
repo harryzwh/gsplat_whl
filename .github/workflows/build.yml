@@ -9,7 +9,12 @@ jobs:
     defaults:
       run:
         working-directory: /workdir
-    
+
+    env:
+      TORCH_VER: "2.13.0"
+      NUMPY_VER: "2.4.6"
+      MAX_JOBS: 8
+
     steps:
       - name: Create workdir
         working-directory: /
@@ -22,10 +27,10 @@ jobs:
         with:
           level: 4
       
-      - name: Install CUDA
-        uses: Jimver/cuda-toolkit@v0.2.36
-        with: 
-          cuda: "12.9.2"
+      # - name: Install CUDA
+      #   uses: Jimver/cuda-toolkit@v0.2.36
+      #   with: 
+      #     cuda: "12.9.2"
       
       - name: Install uv and Python
         uses: astral-sh/setup-uv@v10.3.3
@@ -33,3 +38,10 @@ jobs:
           python-version: "3.13"
           venv-path: "/venv"
           enable-cache: false
+      
+      - name: Install python packages
+        run: >
+          uv pip --link-mode=copy --no-build-isolation --index-strategy unsafe-best-match
+          packaging setuptools wheel ninja build scikit_build_core cmake
+          torch==${TORCH_VER} --extra-index-url https://download.pytorch.org/whl/cu129
+          numpy==${NUMPY_VER}
