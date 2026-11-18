@@ -37,7 +37,9 @@ jobs:
         with:
           python-version: "3.13"
           venv-path: "/venv"
+          activate-environment: true
           enable-cache: false
+
       
       - name: Install python packages
         run: >
