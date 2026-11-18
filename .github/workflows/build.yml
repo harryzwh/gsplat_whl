@@ -13,7 +13,7 @@ jobs:
     env:
       TORCH_VER: "2.13.0"
       NUMPY_VER: "2.4.6"
-      MAX_JOBS: 8
+      MAX_JOBS: 4
 
     steps:
       - name: Create workdir
@@ -47,15 +47,32 @@ jobs:
           torch==${TORCH_VER} --extra-index-url https://download.pytorch.org/whl/cu129
           numpy==${NUMPY_VER}
     
-      - name: Clone source
+      - name: Build gsplat
         run: |
           git clone --depth 1 --recursive https://github.com/nerfstudio-project/gsplat.git /workdir/gsplat
-      
-      - name: Build whl
-        run: |
           mkdir /workdir/whl_bin
           cd /workdir/gsplat
           TORCH_CUDA_ARCH_LIST="8.9 9.0 9.0a" \
           uv build --wheel --no-build-isolation --verbose -o /workdir/whl_bin .
-          echo "BUILD_STATUS=success" >> $GITHUB_ENV
           ls /workdir/whl_bin
+      
+      - name: Build fused-ssim
+        run: |
+          git clone --depth=1 --recursive https://github.com/rahul-goel/fused-ssim.git /workdir/fused-ssim
+          mkdir /workdir/whl_bin
+          cd /workdir/fused-ssim
+          CUDA_ARCHITECTURES="89;90;90a" \
+          uv build --wheel --no-build-isolation --verbose -o /workdir/whl_bin .
+          ls /workdir/whl_bin
+      
+      - name: Prepare upload file
+        run: |
+          cd /workdir/whl_bin 
+          echo "TAG_NAME= _$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+          echo "UPLOAD_FILE=$PWD/*.whl" >> $GITHUB_ENV
+      
+      - name: Upload firmware to release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          files: ${{ env.UPLOAD_FILE }}
