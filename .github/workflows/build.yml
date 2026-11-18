@@ -49,7 +49,7 @@ jobs:
     
       - name: Clone source
         run: |
-          git clone --depth 1 https://github.com/nerfstudio-project/gsplat.git /workdir/gsplat
+          git clone --depth 1 --recursive https://github.com/nerfstudio-project/gsplat.git /workdir/gsplat
       
       - name: Build whl
         run: |
