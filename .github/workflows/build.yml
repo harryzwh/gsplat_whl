@@ -36,7 +36,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: "3.13"
-          venv-path: "/venv"
+          venv-path: ".venv"
           activate-environment: true
           enable-cache: false
 
