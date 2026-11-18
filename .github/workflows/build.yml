@@ -41,7 +41,7 @@ jobs:
       
       - name: Install python packages
         run: >
-          uv pip --link-mode=copy --no-build-isolation --index-strategy unsafe-best-match
+          uv pip --no-build-isolation --index-strategy unsafe-best-match
           packaging setuptools wheel ninja build scikit_build_core cmake
           torch==${TORCH_VER} --extra-index-url https://download.pytorch.org/whl/cu129
           numpy==${NUMPY_VER}
