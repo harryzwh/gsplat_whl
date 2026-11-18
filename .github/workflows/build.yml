@@ -1,0 +1,34 @@
+name: gsplat builder
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: /workdir
+    
+    steps:
+      - name: Create workdir
+        working-directory: /
+        run: |
+          sudo mkdir -p /workdir
+          sudo chown $USER:$GROUPS /workdir
+    
+      - name: Cleanup disk
+        uses: eclipse-score/more-disk-space@v1.1
+        with:
+          level: 4
+      
+      - name: Install CUDA
+        uses: Jimver/cuda-toolkit@v0.2.36
+        with: 
+          cuda: "12.9.2"
+      
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.13"
+          enable-cache: true
