@@ -32,4 +32,4 @@ jobs:
         with:
           python-version: "3.13"
           venv-path: "/venv"
-          enable-cache: true
+          enable-cache: false
