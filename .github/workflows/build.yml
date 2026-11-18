@@ -19,8 +19,8 @@ jobs:
       - name: Create workdir
         working-directory: /
         run: |
-          sudo mkdir -p /workdir
-          sudo chown $USER:$GROUPS /workdir
+          sudo mkdir -p /workdir/whl_bin
+          sudo chown -R $USER:$GROUPS /workdir
     
       - name: Cleanup disk
         uses: eclipse-score/more-disk-space@v1.1
@@ -50,7 +50,6 @@ jobs:
       - name: Build gsplat
         run: |
           git clone --depth 1 --recursive https://github.com/nerfstudio-project/gsplat.git /workdir/gsplat
-          mkdir /workdir/whl_bin
           cd /workdir/gsplat
           TORCH_CUDA_ARCH_LIST="8.9 9.0 9.0a" \
           uv build --wheel --no-build-isolation --verbose -o /workdir/whl_bin .
@@ -59,7 +58,6 @@ jobs:
       - name: Build fused-ssim
         run: |
           git clone --depth=1 --recursive https://github.com/rahul-goel/fused-ssim.git /workdir/fused-ssim
-          mkdir /workdir/whl_bin
           cd /workdir/fused-ssim
           CUDA_ARCHITECTURES="89;90;90a" \
           uv build --wheel --no-build-isolation --verbose -o /workdir/whl_bin .
