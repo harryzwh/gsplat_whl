@@ -1,5 +1,8 @@
 name: gsplat builder
 
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
 
